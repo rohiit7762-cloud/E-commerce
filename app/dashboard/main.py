@@ -35,76 +35,115 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# 2. Modern Glassmorphic CSS Styling
+# 2. Modern Glassmorphic CSS Styling & Typography
 st.markdown(
     """
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap');
+
     /* Global styles */
     .stApp {
-        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+        background: radial-gradient(circle at 15% 15%, #131d38 0%, #090d16 100%);
         color: #f8fafc;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    /* Metric Cards */
+    /* Header Container */
+    .header-banner {
+        padding: 4px 0 16px 0;
+        margin-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .badge-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(56, 189, 248, 0.12);
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        color: #38bdf8;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 4px 12px;
+        border-radius: 9999px;
+        margin-bottom: 8px;
+    }
+    .header-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #ffffff !important;
+        margin: 0 0 4px 0;
+        letter-spacing: -0.02em;
+    }
+    .header-subtitle {
+        color: #94a3b8;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
+    /* Metric Cards - Strict Prevention of Truncation */
     div[data-testid="stMetric"] {
-        background: rgba(30, 41, 59, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 16px 20px;
-        backdrop-filter: blur(12px);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-        transition: transform 0.2s ease, border-color 0.2s ease;
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.09) !important;
+        border-radius: 12px !important;
+        padding: 16px 20px !important;
+        backdrop-filter: blur(12px) !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
     }
     div[data-testid="stMetric"]:hover {
-        transform: translateY(-2px);
-        border-color: #38bdf8;
+        transform: translateY(-2px) !important;
+        border-color: rgba(56, 189, 248, 0.5) !important;
+        box-shadow: 0 8px 30px rgba(56, 189, 248, 0.15) !important;
     }
     div[data-testid="stMetricLabel"] {
         color: #94a3b8 !important;
-        font-size: 0.85rem !important;
+        font-size: 0.8rem !important;
         font-weight: 600 !important;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        white-space: normal !important;
+        word-break: break-word !important;
     }
     div[data-testid="stMetricValue"] {
         color: #f8fafc !important;
+        font-family: 'Outfit', 'Inter', sans-serif !important;
+        font-size: 1.55rem !important;
         font-weight: 700 !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+    }
+    div[data-testid="stMetricValue"] > div {
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
     }
 
     /* Tabs styling */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 12px;
+        gap: 8px;
         background-color: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding-bottom: 2px;
     }
     .stTabs [data-baseweb="tab"] {
-        height: 48px;
-        background: rgba(30, 41, 59, 0.5);
+        height: 44px;
+        background: rgba(30, 41, 59, 0.45);
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 8px 8px 0 0;
-        color: #cbd5e1;
+        color: #94a3b8;
         font-weight: 600;
-        padding: 0 24px;
+        font-size: 0.9rem;
+        padding: 0 20px;
     }
     .stTabs [aria-selected="true"] {
         background: rgba(56, 189, 248, 0.15) !important;
+        border: 1px solid rgba(56, 189, 248, 0.4) !important;
         border-bottom: 2px solid #38bdf8 !important;
         color: #38bdf8 !important;
-    }
-
-    /* Header branding */
-    .brand-title {
-        font-size: 2.1rem;
-        font-weight: 800;
-        background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 4px;
-    }
-    .brand-subtitle {
-        color: #94a3b8;
-        font-size: 0.95rem;
-        margin-bottom: 24px;
     }
     </style>
     """,
@@ -129,7 +168,7 @@ def run_dashboard():
 
         # Database Status Badge
         dialect = analytics.engine.dialect.name.upper()
-        st.info(f"Connected: **{dialect} Warehouse**")
+        st.success(f"Warehouse Engine: **{dialect}** (Live / Synced)")
 
         st.markdown("---")
         st.markdown("#### 🔍 Filter Criteria")
@@ -139,31 +178,50 @@ def run_dashboard():
         selected_country = st.selectbox("Select Country", options=countries)
         country_filter = None if selected_country == "All Countries" else selected_country
 
-        # Date filter toggle
-        enable_date_filter = st.checkbox("Enable Date Window Filter", value=False)
+        # Date Filter Presets
+        st.markdown("#### 📅 Dataset Window Preset")
+        preset = st.radio(
+            "Quick Date Scope",
+            options=[
+                "All Records (Full Warehouse)",
+                "2010–2011 (UCI Online Retail)",
+                "2023 (QA Synthetic Fixture)",
+                "Custom Date Range",
+            ],
+            index=0,
+        )
+
         start_date_str, end_date_str = None, None
-        if enable_date_filter:
+        if preset == "2010–2011 (UCI Online Retail)":
+            start_date_str = "2010-12-01 00:00:00"
+            end_date_str = "2011-12-31 23:59:59"
+        elif preset == "2023 (QA Synthetic Fixture)":
+            start_date_str = "2023-01-01 00:00:00"
+            end_date_str = "2023-12-31 23:59:59"
+        elif preset == "Custom Date Range":
             col1, col2 = st.columns(2)
             with col1:
                 start_date = st.date_input("From Date", pd.to_datetime("2010-12-01"))
                 start_date_str = f"{start_date} 00:00:00"
             with col2:
-                end_date = st.date_input("To Date", pd.to_datetime("2011-12-31"))
+                end_date = st.date_input("To Date", pd.to_datetime("2023-12-31"))
                 end_date_str = f"{end_date} 23:59:59"
 
         st.markdown("---")
         st.markdown("#### ⚡ Pipeline Execution")
-        if st.button("🔄 Refresh Data Cache"):
+        if st.button("🔄 Refresh Data Cache", use_container_width=True):
             st.cache_data.clear()
             st.rerun()
 
     # Main Header
     st.markdown(
-        '<div class="brand-title">E-Commerce Sales Analytics & Automated QA Platform</div>',
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        '<div class="brand-subtitle">Enterprise Data Pipeline, Dual-Verified SQL Analytics & Quality Assurance Telemetry</div>',
+        """
+        <div class="header-banner">
+            <div class="badge-pill">⚡ SCHNEIDER ELECTRIC • INDUSTRIAL ANALYTICS & QA</div>
+            <h1 class="header-title">E-Commerce Sales Analytics & QA Platform</h1>
+            <p class="header-subtitle">Production ETL Pipeline • Dual-Verified SQL Warehouse • Automated QA & Test Telemetry</p>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
 
@@ -174,16 +232,48 @@ def run_dashboard():
         country=country_filter,
     )
 
-    # Top KPI Metrics Row
-    k1, k2, k3, k4, k5, k6 = st.columns(6)
-    k1.metric("Net Revenue", format_currency(kpis["net_revenue"]))
-    k2.metric("Gross Revenue", format_currency(kpis["gross_revenue"]))
-    k3.metric("Total Refunds", format_currency(kpis["total_refunds"]))
-    k4.metric("Completed Orders", f"{kpis['completed_orders']:,}")
-    k5.metric("Avg Order Value", format_currency(kpis["average_order_value"]))
-    k6.metric("Net Units Sold", f"{kpis['net_units_sold']:,}")
+    # Top KPI Metrics (Organized into 2 spacious rows of 3 to eliminate ellipsis truncation)
+    row1_c1, row1_c2, row1_c3 = st.columns(3)
+    with row1_c1:
+        st.metric(
+            label="Net Sales Revenue",
+            value=format_currency(kpis["net_revenue"]),
+            help="Total completed sales minus refunds and cancellations",
+        )
+    with row1_c2:
+        st.metric(
+            label="Gross Sales Revenue",
+            value=format_currency(kpis["gross_revenue"]),
+            help="Gross monetary value of all completed sales",
+        )
+    with row1_c3:
+        st.metric(
+            label="Total Refunds / Returns",
+            value=format_currency(kpis["total_refunds"]),
+            help="Sum of line totals from order returns and cancellations",
+        )
 
-    st.markdown("<br>", unsafe_allow_html=True)
+    row2_c1, row2_c2, row2_c3 = st.columns(3)
+    with row2_c1:
+        st.metric(
+            label="Completed Orders",
+            value=f"{kpis['completed_orders']:,}",
+            help="Total count of unique successful sales invoices",
+        )
+    with row2_c2:
+        st.metric(
+            label="Average Order Value (AOV)",
+            value=format_currency(kpis["average_order_value"]),
+            help="Gross Revenue divided by Completed Orders",
+        )
+    with row2_c3:
+        st.metric(
+            label="Net Units Dispatched",
+            value=f"{kpis['net_units_sold']:,}",
+            help="Total quantity of individual items sold",
+        )
+
+    st.markdown("<div style='margin-bottom: 16px;'></div>", unsafe_allow_html=True)
 
     # 4 Main Analysis Tabs
     tab1, tab2, tab3, tab4 = st.tabs(
