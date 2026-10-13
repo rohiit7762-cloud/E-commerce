@@ -26,8 +26,10 @@ SELECT
     CASE 
         WHEN COUNT(DISTINCT CASE WHEN is_cancellation = FALSE THEN invoice_no END) > 0 
         THEN ROUND(
-            SUM(CASE WHEN is_cancellation = FALSE THEN line_total ELSE 0.0 END) / 
-            COUNT(DISTINCT CASE WHEN is_cancellation = FALSE THEN invoice_no END), 
+            CAST(
+                SUM(CASE WHEN is_cancellation = FALSE THEN line_total ELSE 0.0 END) / 
+                COUNT(DISTINCT CASE WHEN is_cancellation = FALSE THEN invoice_no END)
+            AS NUMERIC), 
             2
         )
         ELSE 0.0 
