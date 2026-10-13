@@ -1,0 +1,14 @@
+InvoiceNo,StockCode,Description,Quantity,InvoiceDate,UnitPrice,CustomerID,Country
+100001,ITEM_A,Product Alpha,2,2023-01-10 10:00:00,10.0,101.0,United Kingdom
+100001,ITEM_B,Product Beta,1,2023-01-10 10:00:00,20.0,101.0,United Kingdom
+100002,ITEM_C,Product Gamma,4,2023-01-15 11:30:00,15.0,102.0,France
+100002,ITEM_C,Product Gamma,4,2023-01-15 11:30:00,15.0,102.0,France
+100003,ITEM_A,Product Alpha,3,2023-02-05 14:15:00,10.0,101.0,United Kingdom
+C100004,ITEM_A,Product Alpha Return,-1,2023-02-10 09:00:00,10.0,101.0,United Kingdom
+100005,ITEM_D,Product Delta,2,2023-02-12 16:45:00,25.0,,Germany
+100006,BAD_P1,Damaged goods adjustment,1,2023-02-15 10:00:00,-5.0,103.0,United Kingdom
+100007,BAD_P2,Pricing Glitch,5,2023-02-16 11:00:00,0.0,104.0,United Kingdom
+,ITEM_E,Missing Invoice Number,1,2023-02-17 12:00:00,12.0,105.0,United Kingdom
+100008,,Missing Stock Code,2,2023-02-18 13:00:00,8.0,106.0,United Kingdom
+100009,ITEM_F,Zero Quantity Item,0,2023-02-19 14:00:00,15.0,107.0,United Kingdom
+100010,ITEM_B,Product Beta,5,2023-03-01 10:20:00,20.0,108.0,Germany

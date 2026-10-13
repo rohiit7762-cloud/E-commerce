@@ -1,0 +1,47 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# Environment configuration
+.env
+!.env.example
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Linters
+.ruff_cache/
+
+# Streamlit
+.streamlit/
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Reports and temporary execution output
+reports/
+logs/
+data/raw/
+data/processed/
+
+# Private interview preparation documentation (local only)
+docs/interview_preparation.md
+docs/automation_architecture_and_interview_guide.md

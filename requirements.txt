@@ -1,0 +1,20 @@
+# Core Data & ETL
+pandas>=2.2.0
+numpy>=1.26.0
+pydantic>=2.7.0
+pydantic-settings>=2.2.0
+python-dotenv>=1.0.0
+openpyxl>=3.1.5
+
+# Database & ORM
+sqlalchemy>=2.0.29
+psycopg2-binary>=2.9.9
+
+# QA, Testing & Code Quality
+pytest>=8.1.0
+pytest-cov>=5.0.0
+ruff>=0.4.0
+
+# Analytics & Dashboard
+streamlit>=1.33.0
+plotly>=5.20.0
