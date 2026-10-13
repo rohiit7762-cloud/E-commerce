@@ -1,5 +1,6 @@
 """Integration tests for SQL analytical queries and dual verification with Pandas."""
 
+import os
 from pathlib import Path
 
 import pytest
@@ -8,6 +9,7 @@ from app.analytics.engine import AnalyticsEngine
 from app.analytics.pandas_verifier import compute_pandas_kpis
 from app.database.connection import get_engine, init_db
 from app.database.loader import load_transactions
+from app.database.models import Base
 from app.etl.pipeline import run_etl
 
 FIXTURE_PATH = "test-data/synthetic_transactions.csv"
@@ -16,16 +18,25 @@ FIXTURE_PATH = "test-data/synthetic_transactions.csv"
 @pytest.fixture(scope="module")
 def populated_analytics_engine(tmp_path_factory):
     """Provide an AnalyticsEngine backed by an isolated database loaded with deterministic test data."""
-    tmp_dir = tmp_path_factory.mktemp("analytics_test")
-    db_file = tmp_dir / "analytics_test.db"
-    db_url = f"sqlite:///{db_file}"
-    engine = get_engine(db_url)
-    init_db(engine)
+    env_db_url = os.environ.get("DATABASE_URL")
+    if env_db_url and "postgresql" in env_db_url:
+        engine = get_engine(env_db_url)
+        Base.metadata.drop_all(engine)
+        init_db(engine)
+    else:
+        tmp_dir = tmp_path_factory.mktemp("analytics_test")
+        db_file = tmp_dir / "analytics_test.db"
+        db_url = f"sqlite:///{db_file}"
+        engine = get_engine(db_url)
+        init_db(engine)
 
     etl_result = run_etl(FIXTURE_PATH)
     load_transactions(engine, etl_result.accepted_df)
 
-    return AnalyticsEngine(engine), etl_result.accepted_df
+    yield AnalyticsEngine(engine), etl_result.accepted_df
+
+    if env_db_url and "postgresql" in env_db_url:
+        Base.metadata.drop_all(engine)
 
 
 def test_sql_kpis_match_manual_baseline(populated_analytics_engine):

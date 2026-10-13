@@ -35,6 +35,7 @@ omit = [
     "tests/*",
     "*/__init__.py",
     "app/dashboard/app.py",
+    "app/dashboard/main.py",
 ]
 
 [tool.coverage.report]

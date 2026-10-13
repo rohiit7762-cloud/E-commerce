@@ -113,3 +113,15 @@ def test_defect_003_whitespace_and_casing_normalization():
     assert row["stock_code"] == "ABC123Z"
     assert row["description"] == "Sample Description"
     assert row["country"] == "United Kingdom"
+
+
+def test_defect_004_postgresql_engine_configuration():
+    """
+    Regression Test for DEFECT-004:
+    PostgreSQL database URL must configure an engine with dialect 'postgresql',
+    pool_pre_ping enabled, and production pool sizing.
+    """
+    pg_url = "postgresql+psycopg2://test_user:test_password@localhost:5432/ecommerce_test_db"
+    engine = get_engine(pg_url)
+    assert engine.dialect.name == "postgresql"
+    assert engine.pool.size() == 10

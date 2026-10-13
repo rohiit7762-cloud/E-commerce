@@ -55,21 +55,17 @@ jobs:
         run: |
           python -c "from scripts.prepare_dataset import create_deterministic_fixtures; create_deterministic_fixtures()"
 
-      - name: Run Unit Tests
+      - name: Run Full Pytest Suite with Coverage (SQLite Baseline)
         run: |
-          pytest tests/unit/ -v
+          pytest -v --cov=app --cov-report=term-missing --cov-report=xml --cov-fail-under=80
 
-      - name: Run Regression Tests
-        run: |
-          pytest tests/regression/ -v
-
-      - name: Run Database Integration & SQL Correctness Tests (PostgreSQL Container)
+      - name: Run Database Integration & SQL Tests (PostgreSQL Container)
         env:
           DATABASE_URL: postgresql+psycopg2://test_user:test_password@localhost:5432/ecommerce_test_db
         run: |
-          pytest tests/integration/ -v --cov=app --cov-report=term-missing --cov-report=xml
+          pytest tests/integration/ -v
 
-      - name: Verify End-to-End ETL Pipeline Execution
+      - name: Verify End-to-End ETL Pipeline Execution (PostgreSQL Container)
         env:
           DATABASE_URL: postgresql+psycopg2://test_user:test_password@localhost:5432/ecommerce_test_db
         run: |

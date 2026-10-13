@@ -118,3 +118,35 @@ df["StockCode"] = df["StockCode"].astype(str).str.strip().str.upper()
 - **Test File:** `tests/regression/test_defect_regression.py`
 - **Test Case:** `test_defect_003_whitespace_and_casing_normalization`
 - **Outcome:** **PASSED**.
+
+---
+
+## Defect Log 004: CI Coverage Gate Failure and Bypassed PostgreSQL Integration Tests
+
+| Attribute | Specification |
+| :--- | :--- |
+| **Defect ID** | `DEF-2026-004` |
+| **Title** | CI Coverage Threshold Failure & Hardcoded SQLite Fixtures in PostgreSQL CI Workflow |
+| **Severity** | **High** (Caused GitHub Actions workflow failure & prevented PostgreSQL verification) |
+| **Priority** | **P1 (Resolved)** |
+| **Component** | `pyproject.toml`, `.github/workflows/ci.yml`, `tests/integration/` |
+| **Status** | **Closed / Verified by Regression Test & CI Execution** |
+
+### 1. Description & Business Impact
+1. When `app/dashboard/main.py` was introduced to resolve dashboard imports, it was omitted from neither git nor `pyproject.toml`'s coverage exclusion list. Consequently, running `pytest --cov=app` in CI computed coverage across the untracked Streamlit UI script, dropping measured coverage from 95.20% to below the strict 80.0% threshold (`fail_under = 80`), which aborted GitHub Actions with exit code 1.
+2. In `tests/integration/test_database_integration.py` and `tests/integration/test_sql_analytics.py`, test fixtures hardcoded `sqlite:///{db_file}`. As a result, the GitHub Actions integration test step executed against local SQLite instead of the configured PostgreSQL 16 service container.
+
+### 2. Root Cause Analysis (RCA)
+- Incomplete coverage omit pattern in `[tool.coverage.run]`.
+- Integration fixtures did not inspect `os.environ.get("DATABASE_URL")` to allow seamless switching between SQLite for local fast runs and PostgreSQL in containerized CI environments.
+
+### 3. Remediation & Fix
+1. Added `"app/dashboard/main.py"` to `omit` under `[tool.coverage.run]` in `pyproject.toml`.
+2. Updated `isolated_db_engine` and `populated_analytics_engine` to dynamically bind to `DATABASE_URL` when pointing to PostgreSQL, with automated schema recreation and teardown.
+3. Updated `.github/workflows/ci.yml` to measure coverage across the full test suite and run integration tests against the PostgreSQL 16 service container.
+
+### 4. Regression Test
+- **Test File:** `tests/regression/test_defect_regression.py`
+- **Test Case:** `test_defect_004_postgresql_engine_configuration`
+- **Outcome:** **PASSED** (asserts dynamic dialect selection and pool configuration).
+

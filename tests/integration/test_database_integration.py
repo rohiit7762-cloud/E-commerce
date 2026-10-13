@@ -1,5 +1,4 @@
-"""Integration tests for database initialization, constraints, and idempotent loading."""
-
+import os
 from pathlib import Path
 
 import pytest
@@ -7,18 +6,26 @@ from sqlalchemy import func, select
 
 from app.database.connection import get_engine, get_session_factory, init_db, session_scope
 from app.database.loader import load_transactions
-from app.database.models import DimProduct, EtlAuditLog, FactTransaction
+from app.database.models import Base, DimProduct, EtlAuditLog, FactTransaction
 from app.etl.pipeline import run_etl
 
 
 @pytest.fixture
 def isolated_db_engine(tmp_path: Path):
-    """Provide an isolated, clean SQLite database for integration testing."""
-    db_file = tmp_path / "test_isolated.db"
-    db_url = f"sqlite:///{db_file}"
-    engine = get_engine(db_url)
-    init_db(engine)
-    return engine
+    """Provide an isolated, clean database for integration testing (PostgreSQL if set, else SQLite)."""
+    env_db_url = os.environ.get("DATABASE_URL")
+    if env_db_url and "postgresql" in env_db_url:
+        engine = get_engine(env_db_url)
+        Base.metadata.drop_all(engine)
+        init_db(engine)
+        yield engine
+        Base.metadata.drop_all(engine)
+    else:
+        db_file = tmp_path / "test_isolated.db"
+        db_url = f"sqlite:///{db_file}"
+        engine = get_engine(db_url)
+        init_db(engine)
+        yield engine
 
 
 def test_initial_load_populates_tables(isolated_db_engine):
